@@ -1149,7 +1149,7 @@ local themes = {
 		["Dropdown Option Background"] = Color3.fromRGB(19, 19, 23)
 	},
 
-	AirHub = {
+	Nexify = {
 		["Accent"] = Color3.fromRGB(150, 100, 150),
 		["Window Background"] = Color3.fromRGB(35, 30, 35),
 		["Window Border"] = Color3.fromRGB(50, 45, 50),
@@ -3829,4 +3829,4 @@ end
 return library
 
 -- Forked from https://github.com/vozoid/ui-libraries/blob/main/drawing/void/source.lua
--- Edited by Zero for AirHub V2
+-- Edited by Zero for Nexify

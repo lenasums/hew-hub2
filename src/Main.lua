@@ -932,21 +932,21 @@ ProfilesSection:Button({
 	end
 })
 
-InformationSection:Label("Made by Exunys")
+InformationSection:Label("Made by Zero")
 
 InformationSection:Button({
-	Name = "Copy GitHub",
+	Name = "Copy Discord",
 	Callback = function()
-		setclipboard("https://github.com/Exunys")
+		setclipboard("Steventhefood")
 	end
 })
 
-InformationSection:Label("AirTeam © 2022 - "..osdate("%Y"))
+InformationSection:Label("Zero - "..osdate("%Y"))
 
 InformationSection:Button({
-	Name = "Copy Discord Invite",
+	Name = "Copy Frostrite",
 	Callback = function()
-		setclipboard("https://discord.gg/Ncz3H3quUZ")
+		setclipboard("Frostrite")
 	end
 })
 

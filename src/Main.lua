@@ -25,7 +25,7 @@ local osdate = os.date
 
 --// Launching
 
-loadstring(game:HttpGet("https://raw.githubusercontent.com/stevencao2203212/hew-hub2/refs/heads/main/src/Main.lua"))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/Exunys/Roblox-Functions-Library/main/Library.lua"))()
 
 local GUI = loadstring(game:HttpGet("https://raw.githubusercontent.com/stevencao2203212/hew-hub2/refs/heads/main/src/UI%20Library.lua"))()
 local ESP = loadstring(game:HttpGet("https://raw.githubusercontent.com/Exunys/Exunys-ESP/main/src/ESP.lua"))()

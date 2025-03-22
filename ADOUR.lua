@@ -1,2 +1,1 @@
-getgenv().Key = "InstantHitWoo"
-loadstring(game:HttpGet("https://raw.githubusercontent.com/LirpOfficial/Lirp/refs/heads/main/Loader", true))()
+loadstring(game:HttpGet("https://github.com/SWIMHUBISWIMMING/cracked/blob/main/lirping/main.lua?raw=true"))()

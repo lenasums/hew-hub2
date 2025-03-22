@@ -1227,16 +1227,6 @@ do
     gunmodbox:AddToggle('gunmods_rapidfire', {Text = 'rapid fire',Default = false,Callback = function(first)
         rapidfire = first
     end})]]
-   gunmodbox:('SkinChanger menu', true, Enum.KeyCode.KeypadEight, function(v)
-    if scriptloading then return end
-    if librarymaingui.Visible == false then return end
-
-    scbool = v
-
-    if v then keylist_addkey("SkinChanger", Enum.KeyCode.KeypadEight.Name) else keylist_removekey("SkinChanger") end
-
-    scgui.Visible = v
-end)
 
     salobox:AddToggle('silentaim_enabled', {Text = 'silent aim',Default = false,Callback = function(first)
         silent_aim.enabled = first

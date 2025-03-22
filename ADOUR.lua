@@ -19,7 +19,7 @@ mouse.KeyDown:Connect(function(key)
             elseif enabled then
                 enabled = false
                 danceTrack:Stop()
-                danceTrack:Destroy()
+                danceTrack:Destroy()    
             end
         end)
         print(enabled and "spinning the meat" or "not spinning anymore")

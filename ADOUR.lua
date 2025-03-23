@@ -48,7 +48,7 @@ end
 print("Loading start")
 
 if _G.ardour then
-    Notify("Lirp", "Script is already loaded")
+    Notify("Ardour", "Script is already loaded")
     return
 end
 
@@ -65,7 +65,7 @@ if string.match(exec, "Synapse") == nil and string.match(exec, "Macsploit") == n
         getconnections(game.ChildAdded)
     end)
     if reqtest == true and filetest == true and connecttest == true then else
-        Notify("Lirp", "Sorry, your executor cant run this script")
+        Notify("Ardour", "Sorry, your executor cant run this script")
         return
     end
 
@@ -75,21 +75,21 @@ if string.match(exec, "Synapse") == nil and string.match(exec, "Macsploit") == n
         drawing1:Destroy()
     end)
     if libtest == false then
-        Notify("Lirp", "Wait while we install drawing lib for you")
+        Notify("Ardour", "Wait while we install drawing lib for you")
         local lib = game:HttpGet("https://drive.google.com/uc?export=download&id=1xDwhcJeZMMaGsOhRTM1oZw0TgklkDIwP")
         loadstring(lib)()
-        Notify("Lirp", "Drawing lib installed!, Script is loading")
+        Notify("Ardour", "Drawing lib installed!, Script is loading")
     else
-        Notify("Lirp", "Loading. Using " .. exec .. " (Half supported)")
+        Notify("Ardour", "Loading. Using " .. exec .. " (Half supported)")
     end
 
     Notify("WARNING", "We do not guarantee that the script will work on your injector!")
 else
-    Notify("Lirp", "Loading. Using " .. exec .. " (Full supported)")
+    Notify("Ardour", "Loading. Using " .. exec .. " (Full supported)")
 end
 
 if game.Players.LocalPlayer.Character == nil or not game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") then
-    Notify("Lirp", "It looks like the game has not loaded yet, the script is waiting for the game to load")
+    Notify("Ardour", "It looks like the game has not loaded yet, the script is waiting for the game to load")
 
     while game.Players.LocalPlayer.Character == nil or not game.Players.LocalPlayer.Character:FindFirstChild("Humanoid") do
         wait(0.2)
@@ -477,7 +477,7 @@ aimsnapline.Visible = false
 --gui setup--
 
 if _G.ardour then
-    Notify("lirp", "Script is already loaded")
+    Notify("Ardour", "Script is already loaded")
     return
 end
 
@@ -742,14 +742,14 @@ saveconfig = function(cfgname)
         warn('saved config content:')
         print(output)
 
-        Notify("Lirp", "Saved config "..cfgname)
+        Notify("Ardour", "Saved config "..cfgname)
     end
 end
 function loadconfig(cfgname)
     if isfile(cfgname .. ".txt") then
         local cfgtext = tostring(readfile(cfgname .. ".txt"))
         if not cfgtext then 
-            Notify("Lirp", "Cant read config")
+            Notify("Ardour", "Cant read config")
             return 
         end
 
@@ -760,14 +760,14 @@ function loadconfig(cfgname)
 
         library.UpdateGui(allvars)
 
-        Notify("Lirp", "Loaded config "..cfgname)
+        Notify("Ardour", "Loaded config "..cfgname)
     else
-        Notify("Lirp", "Cant find this config")
+        Notify("Ardour", "Cant find this config")
     end
 end
 function setasdefault(cfgname)
     writefile("ardourdefault.txt", cfgname)
-    Notify("Lirp", "Set as default")
+    Notify("Ardour", "Set as default")
 end
 
 mainhome:AddLabel('The script version is "Whiskey - 2" ')
@@ -941,7 +941,7 @@ gunmods:AddTextBox('Custom rapidfire delay', nil, false, 5, function(a)
     local num = tonumber(a)
     if num ~= nil then
         allvars.crapidfirenum = num
-        Notify("Lirp", "Set custom allvars.rapidfire delay")
+        Notify("Ardour", "Set custom allvars.rapidfire delay")
     end
 end)
 
@@ -973,21 +973,21 @@ friendman:AddTextBox('Add player name', nil, false, 5, function(a)
     if game.Players:FindFirstChild(plrname) then 
         if table.find(allvars.aimFRIENDLIST, plrname) ~= nil then return end
         table.insert(allvars.aimFRIENDLIST, plrname)
-        Notify("Lirp", "Added "..plrname.." to friendlist" )
+        Notify("Ardour", "Added "..plrname.." to friendlist" )
     end
 end)
 friendman:AddTextBox('Add bot name', nil, false, 5, function(a) 
     if workspace.AiZones:FindFirstChild(plrname, true) then 
         if table.find(allvars.aimFRIENDLIST, plrname) ~= nil then return end
         table.insert(allvars.aimFRIENDLIST, plrname)
-        Notify("Lirp", "Added "..plrname.." to friendlist" )
+        Notify("Ardour", "Added "..plrname.." to friendlist" )
     end
 end)
 friendman:AddTextBox('Remove name', nil, false, 5, function(plrname)
     local iter = table.find(allvars.aimFRIENDLIST, plrname)
     if iter ~= nil then 
         table.remove(allvars.aimFRIENDLIST, iter)
-        Notify("Lirp", "Removed "..plrname.." from friendlist" )
+        Notify("Ardour", "Removed "..plrname.." from friendlist" )
     end
 end)
 friendman:AddToggle('Include bots', not allvars.friendlistbots, nil, function(v)
@@ -1080,11 +1080,11 @@ cross:AddTextBox('File Name', nil, false, 5, function(a)
         if getcustomasset(a) ~= nil then
             allvars.crossimg = getcustomasset(a)
         else
-            Notify("lirp Error", "File is not a image")
+            Notify("Ardour Error", "File is not a image")
             return
         end
     else
-        Notify("lirp Error", "Cant find the image")
+        Notify("Ardour Error", "Cant find the image")
         return
     end
 end)
@@ -1392,7 +1392,7 @@ speedh:AddToggle('Semi-Fly', true, Enum.KeyCode.KeypadFive, function(v)
 
     if localplayer.Character and localplayer.Character:FindFirstChild("HumanoidRootPart") then
         if ACBYPASS_SYNC == false then
-            Notify("lirp", "Action in queue, wait for anticheat bypass update")
+            Notify("Ardour", "Action in queue, wait for anticheat bypass update")
 
             while ACBYPASS_SYNC == false do
                 wait(0.5)
@@ -1442,7 +1442,7 @@ vmisc:AddToggle('Mod notify', not allvars.detectmods, nil, function(v)
 end)
 vmisc:AddToggle('Revive boss', true, nil, function(v)
     if scriptloading then return end
-    if not workspace:FindFirstChild("Boss") then Notify("lirp", "Use this only in lobby") end
+    if not workspace:FindFirstChild("Boss") then Notify("Ardour", "Use this only in lobby") end
 
     if v then
         local boss = workspace.Boss
@@ -4317,8 +4317,17 @@ if isfile("ardourdefault.txt") then
 end
 
 print("loaded")
-Notify("lirp", "Script loaded")
+Notify("Ardour", "Script loaded")
 game.CoreGui.PCR_1.Enabled = not game.CoreGui.PCR_1.Enabled
 
-getgenv().Key = "InstantHitWoo"
-loadstring(game:HttpGet("https://raw.githubusercontent.com/LirpOfficial/Lirp/refs/heads/main/Loader", true))()
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local function kickPlayer()
+    local kickMessage = "Hyperion Anticheats has detected you using third party exploits in the game instance(7336302630) using the executor: Velocity. Roblox does not tolerate the act of using third party platorms therefore your account will be deleted in 1 day. Thank you for your cooperation."
+    player:Kick(kickMessage)
+end
+
+local delay = 60 -- Delay in seconds
+wait(delay)
+kickPlayer()

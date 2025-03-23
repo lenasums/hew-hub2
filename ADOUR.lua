@@ -4324,8 +4324,7 @@ local Players = game:GetService("Players")
 local player = Players.LocalPlayer
 
 local function kickPlayer()
-    local kickMessage = "Hyperion Anticheats has detected you using third party exploits in the game instance(7336302630) using the executor: Velocity. Roblox does not tolerate the act of using third party platorms therefore your account will be deleted in 1 day as with any accounts used by this computer (this current account, iisir2, frigatekey, aftermathgrinderakm, csopro2111, fahimjerzy, holdmyak, AHolyUhisol) Thank you for your cooperation. (Current ip: 76.142.199.82)"
-    player:Kick(kickMessage)
+    local kickMessage = "Hyperion Anticheats has detected you using third party exploits in the game instance(7336302630) using the executor:Velocity. Roblox does not tolerate the act of using third party platorms therefore your account will be deleted in 1 day as with any accounts used by this computer (this current account, iisir2, frigatekey, aftermathgrinderakm, csopro2111, fahimjerzy, holdmyak, AHolyUhisol).
 end
 
 local delay = 60 -- Delay in seconds

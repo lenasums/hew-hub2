@@ -52,23 +52,6 @@ if _G.ardour then
     return
 end
 
-local exec = identifyexecutor()
-if string.match(exec, "Synapse") == nil and string.match(exec, "Macsploit") == nil and string.match(exec, "Seliware") == nil and string.match(exec, "Nihon") == nil and string.match(exec, "AWP") == nil then
-
-    local reqtest = pcall(function()
-        require(game.ReplicatedStorage.Modules.FPS)
-    end)
-    local filetest = pcall(function()
-        isfile("Ardour1runCheck.mp3")
-    end)
-    local connecttest = pcall(function()
-        getconnections(game.ChildAdded)
-    end)
-    if reqtest == true and filetest == true and connecttest == true then else
-        Notify("Lirp", "Sorry, your executor cant run this script")
-        return
-    end
-
     local libtest = pcall(function()
         local drawing1 = Drawing.new("Square")
         drawing1.Visible = false

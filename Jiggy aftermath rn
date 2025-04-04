@@ -1,0 +1,1658 @@
+local JIGGYBO2 = {
+	esp = {
+		CharacterSize = Vector2.new(5,6);
+		Box = {
+			TeamCheck = false;
+			Box = false;
+			Name = false;
+			Distance = false;
+            GunInventory = false; 
+            BoxTransparency = 1;
+			Color = Color3.fromRGB(255, 255, 255);
+			Outline = false;
+			OutlineColor = Color3.fromRGB(0,0,0);
+		};
+
+		Tracer = {
+			TeamCheck = false;
+			TeamColor = false;
+			Tracer = false;
+			Color = Color3.fromRGB(255, 255, 255);
+			Outline = false;
+			OutlineColor = Color3.fromRGB(0, 0, 0);
+		};
+
+		Highlights = {
+			TeamCheck = false;
+			Highlights = false;
+			AllWaysVisible = false;
+			OutlineTransparency = 0.5;
+			FillTransparency = 0.5;
+			OutlineColor = Color3.fromRGB(255, 0, 0);
+			FillColor = Color3.fromRGB(255, 255, 255);
+		};
+	};
+}
+
+local players = game.Players;
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+local CurrentCamera = workspace.CurrentCamera
+local localPlayer = Players.LocalPlayer
+
+local ESPHolder = Instance.new("Folder", CoreGui)
+ESPHolder.Name = "ESPHolder"
+
+local function IsAlive(Player)
+    local character = Player and Player.Character
+    local worldCharacter = character and character:FindFirstChild("WorldCharacter")
+    return worldCharacter and worldCharacter:FindFirstChild("UpperTorso") ~= nil
+end
+
+local function GetTeam(Player)
+    return Player and Player.Team
+end
+
+local function LoadESP(Player)
+    local PlayerESP = Instance.new("Folder", ESPHolder)
+    PlayerESP.Name = Player.Name .. "ESP"
+
+    -- Box
+    local BoxHolder = Instance.new("ScreenGui", PlayerESP)
+    BoxHolder.Name = "Box"
+    BoxHolder.DisplayOrder = 2
+
+    local TracerHolder = Instance.new("ScreenGui", PlayerESP)
+    TracerHolder.Name = "Tracer"
+
+    local HilightHolder = Instance.new("Folder", PlayerESP)
+    HilightHolder.Name = "Hilight"
+
+    local LeftOutline = Instance.new("Frame", BoxHolder)
+    LeftOutline.BackgroundColor3 = JIGGYBO2.esp.Box.OutlineColor
+    LeftOutline.Visible = false
+    LeftOutline.BorderSizePixel = 1
+
+    local RightOutline = Instance.new("Frame", BoxHolder)
+    RightOutline.BackgroundColor3 = JIGGYBO2.esp.Box.OutlineColor
+    RightOutline.Visible = false
+    RightOutline.BorderSizePixel = 1
+
+    local TopOutline = Instance.new("Frame", BoxHolder)
+    TopOutline.BackgroundColor3 = JIGGYBO2.esp.Box.OutlineColor
+    TopOutline.Visible = false
+    TopOutline.BorderSizePixel = 1
+
+    local BottomOutline = Instance.new("Frame", BoxHolder)
+    BottomOutline.BackgroundColor3 = JIGGYBO2.esp.Box.OutlineColor
+    BottomOutline.Visible = false
+    BottomOutline.BorderSizePixel = 1
+
+    local Left = Instance.new("Frame", BoxHolder)
+    Left.BackgroundColor3 = JIGGYBO2.esp.Box.Color
+    Left.Visible = false
+    Left.BorderSizePixel = 0
+
+    local Right = Instance.new("Frame", BoxHolder)
+    Right.BackgroundColor3 = JIGGYBO2.esp.Box.Color
+    Right.Visible = false
+    Right.BorderSizePixel = 0
+
+    local Top = Instance.new("Frame", BoxHolder)
+    Top.BackgroundColor3 = JIGGYBO2.esp.Box.Color
+    Top.Visible = false
+    Top.BorderSizePixel = 0
+
+    local Bottom = Instance.new("Frame", BoxHolder)
+    Bottom.BackgroundColor3 = JIGGYBO2.esp.Box.Color
+    Bottom.Visible = false
+    Bottom.BorderSizePixel = 0
+
+    local Name = Instance.new("TextLabel", BoxHolder)
+    Name.BackgroundTransparency = 1
+    Name.Text = Player.Name
+    Name.Visible = false
+    Name.AnchorPoint = Vector2.new(0.5, 0.5)
+    Name.TextSize = 12
+    Name.Font = Enum.Font.SourceSansBold
+    Name.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Name.TextStrokeTransparency = 0
+
+    local Distance = Instance.new("TextLabel", BoxHolder)
+    Distance.BackgroundTransparency = 1
+    Distance.Text = ""
+    Distance.Visible = false
+    Distance.AnchorPoint = Vector2.new(0.5, 0.5)
+    Distance.TextSize = 12
+    Distance.Font = Enum.Font.SourceSansBold
+    Distance.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Distance.TextStrokeTransparency = 0
+
+    -- Add Gun Inventory Labels
+    local Gun1 = Instance.new("TextLabel", BoxHolder)
+    Gun1.BackgroundTransparency = 1
+    Gun1.Text = ""
+    Gun1.Visible = false
+    Gun1.AnchorPoint = Vector2.new(0.5, 0.5)
+    Gun1.TextSize = 12
+    Gun1.Font = Enum.Font.SourceSansBold
+    Gun1.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Gun1.TextStrokeTransparency = 0
+
+    local Gun2 = Instance.new("TextLabel", BoxHolder)
+    Gun2.BackgroundTransparency = 1
+    Gun2.Text = ""
+    Gun2.Visible = false
+    Gun2.AnchorPoint = Vector2.new(0.5, 0.5)
+    Gun2.TextSize = 12
+    Gun2.Font = Enum.Font.SourceSansBold
+    Gun2.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Gun2.TextStrokeTransparency = 0
+
+    local Gun3 = Instance.new("TextLabel", BoxHolder)
+    Gun3.BackgroundTransparency = 1
+    Gun3.Text = ""
+    Gun3.Visible = false
+    Gun3.AnchorPoint = Vector2.new(0.5, 0.5)
+    Gun3.TextSize = 12
+    Gun3.Font = Enum.Font.SourceSansBold
+    Gun3.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Gun3.TextStrokeTransparency = 0
+
+    local Gun4 = Instance.new("TextLabel", BoxHolder)
+    Gun4.BackgroundTransparency = 1
+    Gun4.Text = ""
+    Gun4.Visible = false
+    Gun4.AnchorPoint = Vector2.new(0.5, 0.5)
+    Gun4.TextSize = 12
+    Gun4.Font = Enum.Font.SourceSansBold
+    Gun4.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Gun4.TextStrokeTransparency = 0
+
+    local HealthBackground = Instance.new("Frame", BoxHolder)
+    HealthBackground.Visible = false
+    HealthBackground.BorderSizePixel = 1
+    HealthBackground.BorderColor3 = JIGGYBO2.esp.Box.OutlineColor
+
+    -- local HealthBar = Instance.new("Frame", BoxHolder)
+    -- HealthBar.Visible = false
+    -- HealthBar.BorderSizePixel = 0
+    -- HealthBar.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+
+    -- local Health = Instance.new("TextLabel", BoxHolder)
+    -- Health.BackgroundTransparency = 1
+    -- Health.Text = ""
+    -- Health.Visible = false
+    -- Health.AnchorPoint = Vector2.new(0.5, 0.5)
+    -- Health.TextSize = 12
+    -- Health.Font = Enum.Font.SourceSansBold
+    -- Health.TextColor3 = Color3.fromRGB(255, 255, 255)
+    -- Health.TextStrokeTransparency = 0
+
+    -- Tracer
+    local TracerOutline = Instance.new("Frame", TracerHolder)
+    TracerOutline.BackgroundColor3 = JIGGYBO2.esp.Tracer.OutlineColor
+    TracerOutline.Visible = false
+    TracerOutline.BorderSizePixel = 1
+    TracerOutline.AnchorPoint = Vector2.new(0.5, 0.5)
+
+    local Tracer = Instance.new("Frame", TracerHolder)
+    Tracer.BackgroundColor3 = JIGGYBO2.esp.Tracer.Color
+    Tracer.Visible = false
+    Tracer.BorderSizePixel = 0
+    Tracer.AnchorPoint = Vector2.new(0.5, 0.5)
+
+    -- Hilight
+    local Hilight = Instance.new("Highlight", HilightHolder)
+    Hilight.Enabled = false
+
+    local co = coroutine.create(function()
+        RunService.Heartbeat:Connect(function()
+            if IsAlive(Player) then
+                local worldCharacter = Player.Character:FindFirstChild("WorldCharacter")
+                if worldCharacter then
+                    local upperTorso = worldCharacter:FindFirstChild("UpperTorso")
+                    if upperTorso then
+                        local screen, onScreen = CurrentCamera:WorldToScreenPoint(upperTorso.Position)
+                        local frustumHeight = math.tan(math.rad(CurrentCamera.FieldOfView * 0.5)) * 2 * screen.Z
+                        local size = CurrentCamera.ViewportSize.Y / frustumHeight * JIGGYBO2.esp.CharacterSize
+                        local position = Vector2.new(screen.X, screen.Y) - (size / 2 - Vector2.new(0, size.Y) / 20)
+
+                        if onScreen then
+                            -- Box
+                            if JIGGYBO2.esp.Box.TeamCheck ~= true or GetTeam(Player) ~= GetTeam(localPlayer) then
+                                -- local health = Player.Character.Humanoid.Health
+                                -- local healthScale = health / Player.Character.Humanoid.MaxHealth
+                                -- local healthSizeY = size.Y * healthScale
+
+                                LeftOutline.Visible = JIGGYBO2.esp.Box.Box and JIGGYBO2.esp.Box.Outline
+                                RightOutline.Visible = JIGGYBO2.esp.Box.Box and JIGGYBO2.esp.Box.Outline
+                                TopOutline.Visible = JIGGYBO2.esp.Box.Box and JIGGYBO2.esp.Box.Outline
+                                BottomOutline.Visible = JIGGYBO2.esp.Box.Box and JIGGYBO2.esp.Box.Outline
+                                HealthBackground.Visible = JIGGYBO2.esp.Box.HealthBar
+
+                                Left.Visible = JIGGYBO2.esp.Box.Box
+                                Right.Visible = JIGGYBO2.esp.Box.Box
+                                Top.Visible = JIGGYBO2.esp.Box.Box
+                                Bottom.Visible = JIGGYBO2.esp.Box.Box
+                                -- HealthBar.Visible = JIGGYBO2.esp.Box.HealthBar
+                                Name.Visible = JIGGYBO2.esp.Box.Name
+                                Distance.Visible = JIGGYBO2.esp.Box.Distance and not JIGGYBO2.esp.Box.Name
+                                -- Show gun inventory if enabled
+                                if JIGGYBO2.esp.Box.GunInventory then
+                                    local gunInv = Player:FindFirstChild("GunInventory")
+                                    if gunInv then
+                                        Gun1.Visible = true
+                                        Gun2.Visible = true
+                                        Gun3.Visible = true
+                                        Gun4.Visible = true
+                                        
+                                        Gun1.Text = "1: "..(gunInv:FindFirstChild("slot1") and gunInv.slot1.Value or "Empty")
+                                        Gun2.Text = "2: "..(gunInv:FindFirstChild("slot2") and gunInv.slot2.Value or "Empty")
+                                        Gun3.Text = "3: "..(gunInv:FindFirstChild("slot3") and gunInv.slot3.Value or "Empty")
+                                        Gun4.Text = "4: "..(gunInv:FindFirstChild("slot4") and gunInv.slot4.Value or "Empty")
+                                    else
+                                        Gun1.Visible = false
+                                        Gun2.Visible = false
+                                        Gun3.Visible = false
+                                        Gun4.Visible = false
+                                    end
+                                else
+                                    Gun1.Visible = false
+                                    Gun2.Visible = false
+                                    Gun3.Visible = false
+                                    Gun4.Visible = false
+                                end
+                                -- Health.Visible = JIGGYBO2.esp.Box.Health
+
+                                Left.Size = UDim2.fromOffset(size.X, 1)
+                                Right.Size = UDim2.fromOffset(size.X, 1)
+                                Top.Size = UDim2.fromOffset(1, size.Y)
+                                Bottom.Size = UDim2.fromOffset(1, size.Y)
+
+                                LeftOutline.Size = Left.Size
+                                RightOutline.Size = Right.Size
+                                TopOutline.Size = Top.Size
+                                BottomOutline.Size = Bottom.Size
+                                HealthBackground.Size = UDim2.fromOffset(4, size.Y)
+                                -- HealthBar.Size = UDim2.fromOffset(2, -healthSizeY)
+
+                                Left.Position = UDim2.fromOffset(position.X, position.Y)
+                                Right.Position = UDim2.fromOffset(position.X, position.Y + size.Y - 1)
+                                Top.Position = UDim2.fromOffset(position.X, position.Y)
+                                Bottom.Position = UDim2.fromOffset(position.X + size.X - 1, position.Y)
+                                Name.Position = UDim2.fromOffset(screen.X, screen.Y - (size.Y + Name.TextBounds.Y + 14) / 2)
+                                Distance.Position = UDim2.fromOffset(screen.X, screen.Y - (size.Y + Name.TextBounds.Y + 19) / 2)
+                                -- Position gun inventory labels
+                                local yOffset = JIGGYBO2.esp.Box.Name and (Name.TextBounds.Y + 14) or 
+                                              (JIGGYBO2.esp.Box.Distance and (Distance.TextBounds.Y + 14) or 0)
+                                
+                                Gun1.Position = UDim2.fromOffset(screen.X, screen.Y - (size.Y + yOffset + 14) / 2)
+                                Gun2.Position = UDim2.fromOffset(screen.X, screen.Y - (size.Y + yOffset + 28) / 2)
+                                Gun3.Position = UDim2.fromOffset(screen.X, screen.Y - (size.Y + yOffset + 42) / 2)
+                                Gun4.Position = UDim2.fromOffset(screen.X, screen.Y - (size.Y + yOffset + 56) / 2)
+                                HealthBackground.Position = UDim2.fromOffset(position.X - 8, position.Y)
+                                -- HealthBar.Position = UDim2.fromOffset(position.X - 7, position.Y + size.Y)
+                                -- Health.Position = JIGGYBO2.esp.Box.HealthBar and UDim2.fromOffset(position.X - 25, position.Y + size.Y - healthSizeY) or UDim2.fromOffset(position.X - 25, position.Y + size.Y)
+
+                                LeftOutline.Position = Left.Position
+                                RightOutline.Position = Right.Position
+                                TopOutline.Position = Top.Position
+                                BottomOutline.Position = Bottom.Position
+
+                                LeftOutline.BorderColor3 = JIGGYBO2.esp.Box.OutlineColor
+                                RightOutline.BorderColor3 = JIGGYBO2.esp.Box.OutlineColor
+                                TopOutline.BorderColor3 = JIGGYBO2.esp.Box.OutlineColor
+                                BottomOutline.BorderColor3 = JIGGYBO2.esp.Box.OutlineColor
+                                LeftOutline.Transparency = JIGGYBO2.esp.Box.BoxTransparency
+                                RightOutline.Transparency = JIGGYBO2.esp.Box.BoxTransparency
+                                TopOutline.Transparency = JIGGYBO2.esp.Box.BoxTransparency
+                                BottomOutline.Transparency = JIGGYBO2.esp.Box.BoxTransparency
+                                -- HealthBackground.BackgroundColor3 = JIGGYBO2.esp.Box.OutlineColor
+                                -- HealthBackground.BorderColor3 = JIGGYBO2.esp.Box.OutlineColor
+
+                                Left.BackgroundColor3 = JIGGYBO2.esp.Box.Color
+                                Right.BackgroundColor3 = JIGGYBO2.esp.Box.Color
+                                Top.BackgroundColor3 = JIGGYBO2.esp.Box.Color
+                                Bottom.BackgroundColor3 = JIGGYBO2.esp.Box.Color
+                                LeftOutline.BackgroundColor3 = JIGGYBO2.esp.Box.Color
+                                RightOutline.BackgroundColor3 = JIGGYBO2.esp.Box.Color
+                                TopOutline.BackgroundColor3 = JIGGYBO2.esp.Box.Color
+                                BottomOutline.BackgroundColor3 = JIGGYBO2.esp.Box.Color
+
+                                Distance.Text = math.floor(0.5 + (CurrentCamera.CFrame.Position - Player.Character.HumanoidRootPart.Position).magnitude)
+                                Name.Text = JIGGYBO2.esp.Box.Name and JIGGYBO2.esp.Box.Distance and Player.Name .. " (" .. math.floor(0.5 + (CurrentCamera.CFrame.Position - Player.Character.HumanoidRootPart.Position).magnitude) .. ")" or Player.Name
+                                -- Health.Text = math.floor(Player.Character.Humanoid.Health)
+                            else
+                                LeftOutline.Visible = false
+                                RightOutline.Visible = false
+                                TopOutline.Visible = false
+                                BottomOutline.Visible = false
+                                Left.Visible = false
+                                Right.Visible = false
+                                Top.Visible = false
+                                Bottom.Visible = false
+                                Name.Visible = false
+                                Distance.Visible = false
+                                -- HealthBackground.Visible = false
+                                -- HealthBar.Visible = false
+                                -- Health.Visible = false
+                            end
+
+                            -- Tracer
+                            if JIGGYBO2.esp.Tracer.TeamCheck ~= true or GetTeam(Player) ~= GetTeam(localPlayer) then
+                                local ScreenVec2 = Vector2.new(screen.X, screen.Y + size.Y / 2 + size.Y / 20)
+                                local Origin = Vector2.new(CurrentCamera.ViewportSize.X / 2, CurrentCamera.ViewportSize.Y - 1)
+                                local TracerPosition = (Origin + ScreenVec2) / 2
+
+                                TracerOutline.Visible = JIGGYBO2.esp.Tracer.Outline and JIGGYBO2.esp.Tracer.Tracer
+                                Tracer.Visible = JIGGYBO2.esp.Tracer.Tracer
+
+                                Tracer.Rotation = math.deg(math.atan2(ScreenVec2.Y - Origin.Y, ScreenVec2.X - Origin.X))
+                                Tracer.Position = UDim2.new(0, TracerPosition.X, 0, TracerPosition.Y)
+                                Tracer.Size = UDim2.fromOffset((Origin - ScreenVec2).Magnitude, 1)
+
+                                TracerOutline.Rotation = Tracer.Rotation
+                                TracerOutline.Position = Tracer.Position
+                                TracerOutline.Size = Tracer.Size
+
+                                TracerOutline.BorderColor3 = JIGGYBO2.esp.Tracer.OutlineColor
+                                Tracer.BackgroundColor3 = JIGGYBO2.esp.Tracer.Color
+                            else
+                                TracerOutline.Visible = false
+                                Tracer.Visible = false
+                            end
+
+                            -- Hilight
+                            if JIGGYBO2.esp.Highlights.TeamCheck ~= true or GetTeam(Player) ~= GetTeam(localPlayer) then
+                                Hilight.Enabled = JIGGYBO2.esp.Highlights.Highlights
+                                Hilight.Adornee = Player.Character
+
+                                Hilight.OutlineColor = JIGGYBO2.esp.Highlights.OutlineColor
+                                Hilight.FillColor = JIGGYBO2.esp.Highlights.FillColor
+
+                                Hilight.FillTransparency = JIGGYBO2.esp.Highlights.FillTransparency
+                                Hilight.OutlineTransparency = JIGGYBO2.esp.Highlights.OutlineTransparency
+
+                                Hilight.DepthMode = (JIGGYBO2.esp.Highlights.AllWaysVisible and "AlwaysOnTop" or not JIGGYBO2.esp.Highlights.AllWaysVisible and "Occluded");
+                            else
+                                Hilight.Enabled = false
+                                Hilight.Adornee = nil
+                            end
+                        else
+                            LeftOutline.Visible = false
+                            RightOutline.Visible = false
+                            TopOutline.Visible = false
+                            BottomOutline.Visible = false
+                            Left.Visible = false
+                            Right.Visible = false
+                            Top.Visible = false
+                            Bottom.Visible = false
+                            TracerOutline.Visible = false
+                            Tracer.Visible = false
+                            Name.Visible = false
+                            Distance.Visible = false
+                            -- HealthBackground.Visible = false
+                            -- HealthBar.Visible = false
+                            -- Health.Visible = false
+                        end
+                    end
+                end
+            else
+                LeftOutline.Visible = false
+                RightOutline.Visible = false
+                TopOutline.Visible = false
+                BottomOutline.Visible = false
+                Left.Visible = false
+                Right.Visible = false
+                Top.Visible = false
+                Bottom.Visible = false
+                TracerOutline.Visible = false
+                Tracer.Visible = false
+                Name.Visible = false
+                Distance.Visible = false
+                HealthBackground.Visible = false
+                -- HealthBar.Visible = false
+                -- Health.Visible = false
+                Hilight.Adornee = nil
+                -- PlayerESP:Destroy()
+            end
+        end)
+        if not Players:FindFirstChild(Player.Name) then
+            PlayerESP:Destroy()
+            coroutine.yield()
+        end
+    end)
+    coroutine.resume(co)
+end
+
+for i,plr in pairs(players:GetChildren()) do
+	if plr ~= localPlayer then
+		LoadESP(plr);
+	end
+end
+
+players.PlayerAdded:Connect(function(plr)
+	if plr ~= localPlayer then
+		LoadESP(plr);
+	end
+end)
+
+local repo = 'https://raw.githubusercontent.com/DaniHRE/LinoriaLib/main/'
+
+local Library = loadstring(game:HttpGet(repo .. 'Library.lua'))()
+local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua'))()
+local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua'))()
+
+Library:SetWatermarkVisibility(true)
+
+local FrameTimer = tick()
+local FrameCounter = 0;
+local FPS = 60;
+
+local WatermarkConnection = game:GetService('RunService').RenderStepped:Connect(function()
+    FrameCounter += 1;
+
+    if (tick() - FrameTimer) >= 1 then
+        FPS = FrameCounter;
+        FrameTimer = tick();
+        FrameCounter = 0;
+    end;
+
+    Library:SetWatermark(('JIGGY.BO2 | %s fps | %s ms'):format(
+        math.floor(FPS),
+        math.floor(game:GetService('Stats').Network.ServerStatsItem['Data Ping']:GetValue())
+    ));
+end);
+
+Library:OnUnload(function()
+    WatermarkConnection:Disconnect()
+    Library.Unloaded = true
+end)
+
+local Window = Library:CreateWindow({
+    Title = tostring(cloneref(game:GetService("MarketplaceService")):GetProductInfo(game.PlaceId).Name) .. "| " .. "JIGGY.BO2 V3.0";
+    Center = true,
+    AutoShow = true,
+    TabPadding = 8,
+    MenuFadeTime = 0.2
+})
+
+local Tabs = {
+    ['MainTab'] = Window:AddTab('Main'),
+    ['Legit'] = Window:AddTab('Combat'),
+    Main = Window:AddTab('Visuals'),
+    ['Misc'] = Window:AddTab('Misc'),
+    ['UI Settings'] = Window:AddTab('Settings'),
+    ['GunMods'] = Window:AddTab('GunMods'),
+    ['WorldMods'] = Window:AddTab('World'),
+    ['FovView'] = Window:AddTab('FOV'), 
+}
+
+local Main = Tabs.Main:AddRightGroupbox('Chams')
+Main:AddDivider()
+
+Main:AddDivider()
+
+local Legit = Tabs.Legit:AddLeftGroupbox('Aimbot')
+Legit:AddDivider()
+Legit:AddToggle('AimbotEnable', {Text = 'Enable', Default = false, Tooltip = 'Enables The Aimbot.', Callback = function(state)
+if state then
+    print("enabled")
+    
+        local Players = game:GetService("Players")
+        local RunService = game:GetService("RunService")
+        local Workspace = game:GetService("Workspace")
+        local Camera = Workspace.CurrentCamera
+        local Replicated = game:GetService("ReplicatedStorage")
+        local UserInputService = game:GetService("UserInputService")
+        
+        local LocalPlayer = Players.LocalPlayer
+        local player = LocalPlayer
+        
+        local CircleRadius = 280
+        local Gravity = 50
+        local BulletSpeed = 2250
+        local TargetPlayer = nil
+        local RightMouseButtonHeld = false
+        
+        local DebugLineEnabled = true
+        local AimingEnabled = true
+        
+        local Circle = Drawing.new("Circle")
+        Circle.Visible = true
+        Circle.Color = Color3.fromRGB(255, 0, 0) 
+        Circle.Thickness = 1
+        Circle.NumSides = 50
+        Circle.Radius = CircleRadius
+        Circle.Filled = false
+        Circle.Transparency = 0.5
+        
+        local DebugLine = Drawing.new("Line")
+        DebugLine.Color = Color3.fromRGB(0, 255, 0)
+        DebugLine.Thickness = 2
+        DebugLine.Transparency = 0.8
+        DebugLine.Visible = false
+        
+        local PlayersList = {}
+        
+        local function getHeldItem(player)
+            local target = player:FindFirstChild("CurrentSelectedObject")
+            if target and target.Value and target.Value.Value then
+                return target.Value.Value.Name
+            end
+            return nil
+        end
+        
+        local function getBulletSpeed(player)
+            local heldItemName = getHeldItem(player)
+            local bulletSpeed = 2250
+        
+            if heldItemName then
+                local gunData = Replicated:WaitForChild("GunData")
+                local weapon = gunData:FindFirstChild(heldItemName)
+        
+                if weapon and weapon:FindFirstChild("Stats") and weapon.Stats:FindFirstChild("BulletSettings") then
+                    local bulletSpeedObj = weapon.Stats.BulletSettings:FindFirstChild("BulletSpeed")
+                    if bulletSpeedObj then
+                        bulletSpeed = bulletSpeedObj.Value
+                    end
+                end
+            end
+        
+            return bulletSpeed
+        end
+        
+        local function updateCirclePosition()
+            local screenSize = Camera.ViewportSize
+            Circle.Position = Vector2.new(screenSize.X / 2, screenSize.Y / 2)
+        end
+        
+        local function findNearestTargetToMouse()
+            local nearestTarget = nil
+            local shortestDistance = math.huge
+        
+            for _, player in pairs(Players:GetPlayers()) do
+                if PlayersList[player.Name] and player ~= LocalPlayer and player.Character then
+                    local head = player.Character:FindFirstChild("ServerColliderHead") or player.Character:FindFirstChild("Head")
+                    if head then
+                        local screenPoint = Camera:WorldToViewportPoint(head.Position)
+                        local mousePos = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+                        local targetPos = Vector2.new(screenPoint.X, screenPoint.Y)
+                        local distance = (targetPos - mousePos).Magnitude
+        
+                        if distance < CircleRadius and distance < shortestDistance then
+                            shortestDistance = distance
+                            nearestTarget = player
+                        end
+                    end
+                end
+            end
+        
+            return nearestTarget
+        end
+        
+        local function predictFuturePosition(targetPosition, targetVelocity, bulletSpeed, gravity)
+            local distance = (targetPosition - Camera.CFrame.Position).Magnitude
+            local travelTime = distance / bulletSpeed
+            local futurePosition = targetVelocity * travelTime * 1.3
+            futurePosition = futurePosition + targetPosition
+            local drop = gravity * travelTime ^ 2.000 * 1.050
+            futurePosition = futurePosition + Vector3.new(0, drop, 0)
+        
+            return futurePosition
+        end
+        
+        local aimOffsetX = 1.005
+        local function aimAtTarget()
+            if not TargetPlayer or not TargetPlayer.Character then return end
+        
+            local head = TargetPlayer.Character:FindFirstChild("ServerColliderHead") or TargetPlayer.Character:FindFirstChild("Head")
+        
+            if head then
+                local headPosition = head.Position
+                local headVelocity = head.Velocity or Vector3.new(0, 0, 0)
+        
+                local futurePosition = predictFuturePosition(headPosition, headVelocity, BulletSpeed, Gravity)
+        
+                local screenPoint, onScreen = Camera:WorldToViewportPoint(futurePosition)
+        
+                if onScreen then  
+                    local screenCenter = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+                    local targetPos = Vector2.new(screenPoint.X, screenPoint.Y)
+        
+                    -- Adjust deltaX to move the aim slightly left
+                    local deltaX = (targetPos.X - screenCenter.X) - aimOffsetX
+                    local deltaY = targetPos.Y - screenCenter.Y
+        
+                    mousemoverel(deltaX, deltaY)
+                end
+            end
+        end                 
+        
+        local function updateDebugLine()
+            if not DebugLineEnabled then
+                DebugLine.Visible = false
+                return
+            end
+        
+            if TargetPlayer and TargetPlayer.Character then
+                local head = TargetPlayer.Character:FindFirstChild("ServerColliderHead") or TargetPlayer.Character:FindFirstChild("Head")
+        
+                if head then
+                    local targetPosition = head.Position
+                    local targetVelocity = head.Velocity or Vector3.new(0, 0, 0)
+        
+                    local futurePosition = predictFuturePosition(targetPosition, targetVelocity, BulletSpeed, Gravity)
+                    local screenPoint = Camera:WorldToViewportPoint(futurePosition)
+        
+                    DebugLine.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 2)
+                    DebugLine.To = Vector2.new(screenPoint.X, screenPoint.Y)
+                    DebugLine.Visible = true
+                else
+                    DebugLine.Visible = false
+                end
+            else
+                DebugLine.Visible = false
+            end
+        end
+        
+        UserInputService.InputBegan:Connect(function(input, processed)
+            if not processed then
+                if input.KeyCode == Enum.KeyCode.N then
+                    AimingEnabled = not AimingEnabled
+                    print(AimingEnabled and "Aimbot Enabled" or "Aimbot Disabled")
+                elseif input.UserInputType == Enum.UserInputType.MouseButton2 then
+                    RightMouseButtonHeld = true
+                    if TargetPlayer == nil then
+                        TargetPlayer = findNearestTargetToMouse() 
+                    end
+                elseif input.KeyCode == Enum.KeyCode.M then
+                    DebugLineEnabled = not DebugLineEnabled 
+                end
+            end
+        end)
+        
+        UserInputService.InputEnded:Connect(function(input, processed)
+            if input.UserInputType == Enum.UserInputType.MouseButton2 then
+                RightMouseButtonHeld = false
+                TargetPlayer = nil
+            end
+        end)
+        
+          Players.PlayerAdded:Connect(function(player)
+            PlayersList[player.Name] = true
+        end)
+        
+        Players.PlayerRemoving:Connect(function(player)
+            if TargetPlayer == player then
+                TargetPlayer = nil 
+            end
+            PlayersList[player.Name] = nil
+        end)
+        
+        for _, player in pairs(Players:GetPlayers()) do
+            PlayersList[player.Name] = true
+        end
+        
+        RunService.RenderStepped:Connect(function()
+            updateCirclePosition()
+            BulletSpeed = getBulletSpeed(player)
+        
+            updateDebugLine()
+        
+            if RightMouseButtonHeld and AimingEnabled then
+                aimAtTarget()
+            end
+        end)
+        
+        while true do
+            print("Bullet Speed:", BulletSpeed)
+            wait(10)
+        end
+
+else
+print("nye nigger")
+end
+end});
+Legit:AddLabel('Keybind'):AddKeyPicker('AimbotToggle', {Default = 'MB2', SyncToggleState = false, Mode = 'Hold',Text = 'Keybind', NoUI = false, OnClick = function() ClickTic = tick(); end, ChangedCallback = function() end});
+Legit:AddToggle('AimbotWallCheck', {Text = 'Wall Check', Default = false, Tooltip = 'Checks If There Is Something Obstructing The Vision To The Enemy.', Callback = function() end});
+Legit:AddSlider('AimbotSmoothing', {Text = 'Speed', Default = 2500, Min = 1,Max = 2500, Rounding = 1,Compact = false, Callback = function() end});
+Legit:AddDropdown('AimbotHitScan', {Values = { 'Head', 'Torso', 'Arms', 'Legs' }, Default = 1, Multi = true, Text = 'Hit Scan', Tooltip = 'What Parts Of The Body Will The Aimbot Target.', Callback = function() end});
+Legit:AddDivider()
+Legit:AddToggle('AimbotShowFov', {Text = 'Draw Fov', Default = false, Tooltip = 'Shows The Fov.', Callback = function() end}):AddColorPicker('AimbotFovColor', {Default = Color3.new(1, 1, 1), Title = 'Color Of The Fov', Transparency = nil, Callback = function() end});
+Legit:AddSlider('AimbotFovSize', {Text = 'Fov', Default = 600, Min = 0,Max = 1000, Rounding = 1,Compact = false, Callback = function() end});
+Legit:AddDivider()
+
+Legit:AddDivider()
+Legit:AddToggle('Target Snapline', {Text = 'Target Snapline', Default = false, Tooltip = '', Callback = function(state)
+if state then
+print('hi nigger')
+
+else
+print('bye nigger')
+end
+end})
+Legit:AddDivider()
+
+Legit:AddDivider()
+Legit:AddToggle('Mod Detector', {Text = 'Mod Detector', Default = false, Tooltip = '', Callback = function(state)
+if state then
+print('hi nigger')
+    
+else
+print('bye nigger')
+end
+end})
+Legit:AddDivider()
+
+local Legit = Tabs.Legit:AddRightGroupbox('            Silent Aim');
+Legit:AddDivider()
+Legit:AddToggle('SilentAimEnable', {Text = 'Enable', Default = false, Tooltip = 'Enables The Silent Aim.', Callback = function() end});
+Legit:AddToggle('SilentAimWallCheck', {Text = 'Wall Check', Default = false, Tooltip = 'Checks If There Is Something Obstructing The Vision To The Enemy.', Callback = function() end});
+Legit:AddToggle('AimbotWallCheck', {
+    Text = 'Target AI',
+    Default = false,
+    Tooltip = 'Targets AIS',
+    Callback = function(v)
+        aimbots = v
+    end
+})
+
+local WorldMods = Tabs.WorldMods:AddLeftGroupbox('WorldMods')
+WorldMods:AddToggle('FullBright', {Text = 'FullBright', Default = false, Tooltip = '', Callback = function(state)
+	if state then
+		pcall(function()
+			local lighting = game:GetService("Lighting")
+			local players = game:GetService("Players")
+			local localPlayer = players.LocalPlayer
+		
+			-- Function to set fullbright settings
+			local function applyFullbright()
+				lighting.Ambient = Color3.fromRGB(255, 255, 255)
+				lighting.Brightness = 2 -- Increased brightness
+				lighting.FogEnd = math.huge -- More readable than 1e10
+				for _, effect in pairs(lighting:GetDescendants()) do
+					if effect:IsA("BloomEffect") or effect:IsA("BlurEffect") or effect:IsA("ColorCorrectionEffect") or effect:IsA("SunRaysEffect") then
+						effect.Enabled = false
+					end
+				end
+			end
+		
+			-- Apply fullbright settings and listen for lighting changes
+			applyFullbright()
+			lighting.Changed:Connect(applyFullbright)
+		
+			-- Add a headlight to the player's character
+			spawn(function()
+				while wait(1) do
+					local character = localPlayer.Character
+					if character and character:FindFirstChild("HumanoidRootPart") then
+						local rootPart = character.HumanoidRootPart
+						if not rootPart:FindFirstChild("Headlight") then
+							local headlight = Instance.new("PointLight")
+							headlight.Name = "Headlight"
+							headlight.Parent = rootPart
+							headlight.Brightness = 2 -- Increased brightness for headlight
+							headlight.Range = 100 -- Increased range
+							headlight.Color = Color3.fromRGB(255, 255, 255)
+						end
+					end
+				end
+			end)
+		end)				
+
+	else
+	print("by nigger")
+	end
+	end})
+
+    WorldMods:AddToggle('AimHelp', {Text = 'AimHelp', Default = false, Tooltip = '', Callback = function(state)
+        if state then
+            local function API_Check()
+                if Drawing == nil then
+                    return "no"
+                else
+                    return "Yes"
+                end
+            end
+            
+            local Find_Required = API_Check()
+            
+            if Find_Required == "No" then
+                game:GetService("StarterGui"):SetCore("SendNotification",{
+                    Title = "JIGGY.BO2";
+                    Text = "Crosshair script could not be loaded because your exploit is unsupported.";
+                    Duration = math.huge;
+                    Button1 = "OK"
+                })
+            
+                return
+            end
+            
+            local Players = game:GetService("Players")
+            local RunService = game:GetService("RunService")
+            local UserInputService = game:GetService("UserInputService")
+            local Camera = workspace.CurrentCamera
+            
+            local Typing = false
+            
+            local ViewportSize_ = Camera.ViewportSize / 2
+            local Axis_X, Axis_Y = ViewportSize_.X, ViewportSize_.Y
+            
+            local HorizontalLine = Drawing.new("Line")
+            local VerticalLine = Drawing.new("Line")
+            
+            _G.SendNotifications = false   -- If set to true then the script would notify you frequently on any changes applied and when loaded / errored. (If a game can detect this, it is recommended to set it to false)
+            _G.DefaultSettings = false   -- If set to true then the script would create a crosshair with the default settings regardless of any changes.
+            _G.ToMouse = false   -- If set to true then the crosshair will be positioned to your mouse cursor's position. If set to false it will be positioned to the center of your screen.
+            
+            _G.CrosshairVisible = true   -- If set to true then the crosshair would be visible and vice versa.
+            _G.CrosshairSize = 20   -- The size of the crosshair.
+            _G.CrosshairThickness = 1   -- The thickness of the crosshair.
+            _G.CrosshairColor = Color3.fromRGB(0, 0, 255)   -- The color of the crosshair
+            _G.CrosshairTransparency = 1   -- The transparency of the crosshair.
+            
+            
+            RunService.RenderStepped:Connect(function()
+                local Real_Size = _G.CrosshairSize / 2
+            
+                HorizontalLine.Color = _G.CrosshairColor
+                HorizontalLine.Thickness = _G.CrosshairThickness
+                HorizontalLine.Visible = _G.CrosshairVisible
+                HorizontalLine.Transparency = _G.CrosshairTransparency
+                
+                VerticalLine.Color = _G.CrosshairColor
+                VerticalLine.Thickness = _G.CrosshairThickness
+                VerticalLine.Visible = _G.CrosshairVisible
+                VerticalLine.Transparency = _G.CrosshairTransparency
+                
+                if _G.ToMouse == true then
+                    HorizontalLine.From = Vector2.new(UserInputService:GetMouseLocation().X - Real_Size, UserInputService:GetMouseLocation().Y)
+                    HorizontalLine.To = Vector2.new(UserInputService:GetMouseLocation().X + Real_Size, UserInputService:GetMouseLocation().Y)
+                    
+                    VerticalLine.From = Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y - Real_Size)
+                    VerticalLine.To = Vector2.new(UserInputService:GetMouseLocation().X, UserInputService:GetMouseLocation().Y + Real_Size)
+                elseif _G.ToMouse == false then
+                    HorizontalLine.From = Vector2.new(Axis_X - Real_Size, Axis_Y)
+                    HorizontalLine.To = Vector2.new(Axis_X + Real_Size, Axis_Y)
+                
+                    VerticalLine.From = Vector2.new(Axis_X, Axis_Y - Real_Size)
+                    VerticalLine.To = Vector2.new(Axis_X, Axis_Y + Real_Size)
+                end
+            end)
+            
+            if _G.DefaultSettings == true then
+                _G.CrosshairVisible = true
+                _G.CrosshairSize = 25
+                _G.CrosshairThickness = 1
+                _G.CrosshairColor = Color3.fromRGB(40, 90, 255)
+                _G.CrosshairTransparency = 0.15
+                _G.DisableKey = Enum.KeyCode.Q
+            end
+            
+            UserInputService.TextBoxFocused:Connect(function()
+                Typing = true
+            end)
+            
+            UserInputService.TextBoxFocusReleased:Connect(function()
+                Typing = false
+            end)
+            
+            UserInputService.InputBegan:Connect(function(Input)
+                if Input.KeyCode == _G.DisableKey and Typing == false then
+                    _G.CrosshairVisible = not _G.CrosshairVisible
+                    
+                    if _G.SendNotifications == true then
+                        game:GetService("StarterGui"):SetCore("SendNotification",{
+                            Title = "JIGGY.BO2";
+                            Text = "The crosshair's visibility is now set to "..tostring(_G.CrosshairVisible)..".";
+                            Duration = 5;
+                        })
+                    end
+                end
+            end)
+        
+        else
+        print("bye nigger")
+        end
+        end})
+
+        WorldMods:AddToggle('Remove Fog', {
+            Text = 'No Fog',
+            Default = false,
+            Tooltip = '',
+            Callback = function(state)
+                if state then
+                    local atmosphere = game:GetService("Lighting"):FindFirstChildOfClass("Atmosphere")
+                    if atmosphere then
+                        atmosphere:Destroy()
+                    end
+                end
+            end
+        })
+
+        WorldMods:AddToggle('SkyBox Changer', {Text = 'Skybox Changer', Default = false, Tooltip = '', Callback = function(state)
+            if state then
+            print("Enabled")
+        
+            else
+            print("bye nigger")
+            end
+            end})
+            
+            local Lighting = game:GetService("Lighting")
+        local Sky = Lighting:FindFirstChildOfClass("Sky")
+        if not Sky then
+            Sky = Instance.new("Sky", Lighting)
+        end
+        
+        local value = "Standard"
+        
+        -- Define Skybox assets
+        local SkyBoxes = {
+            ["Standard"] = {
+                ["SkyboxBk"] = Sky.SkyboxBk,
+                ["SkyboxDn"] = Sky.SkyboxDn,
+                ["SkyboxFt"] = Sky.SkyboxFt,
+                ["SkyboxLf"] = Sky.SkyboxLf,
+                ["SkyboxRt"] = Sky.SkyboxRt,
+                ["SkyboxUp"] = Sky.SkyboxUp,
+            },
+            ["Among Us"] = {
+                ["SkyboxBk"] = "rbxassetid://5752463190",
+                ["SkyboxDn"] = "rbxassetid://5752463190",
+                ["SkyboxFt"] = "rbxassetid://5752463190",
+                ["SkyboxLf"] = "rbxassetid://5752463190",
+                ["SkyboxRt"] = "rbxassetid://5752463190",
+                ["SkyboxUp"] = "rbxassetid://5752463190"
+            },
+            ["Doge"] = {
+                ["SkyboxBk"] = "rbxassetid://159713165",
+                ["SkyboxDn"] = "rbxassetid://159713165",
+                ["SkyboxFt"] = "rbxassetid://5752463190",
+                ["SkyboxLf"] = "rbxassetid://5752463190",
+                ["SkyboxRt"] = "rbxassetid://159713165",
+                ["SkyboxUp"] = "rbxassetid://159713165"
+            },
+            ["Spongebob"] = {
+                ["SkyboxBk"] = "rbxassetid://277099484",
+                ["SkyboxDn"] = "rbxassetid://277099500",
+                ["SkyboxFt"] = "rbxassetid://277099554",
+                ["SkyboxLf"] = "rbxassetid://277099531",
+                ["SkyboxRt"] = "rbxassetid://277099589",
+                ["SkyboxUp"] = "rbxassetid://277101591"
+            },
+            ["Deep Space"] = {
+                ["SkyboxBk"] = "rbxassetid://159248188",
+                ["SkyboxDn"] = "rbxassetid://159248183",
+                ["SkyboxFt"] = "rbxassetid://159248187",
+                ["SkyboxLf"] = "rbxassetid://159248173",
+                ["SkyboxRt"] = "rbxassetid://159248192",
+                ["SkyboxUp"] = "rbxassetid://159248176"
+            },
+            ["Winter"] = {
+                ["SkyboxBk"] = "rbxassetid://510645155",
+                ["SkyboxDn"] = "rbxassetid://510645130",
+                ["SkyboxFt"] = "rbxassetid://510645179",
+                ["SkyboxLf"] = "rbxassetid://510645117",
+                ["SkyboxRt"] = "rbxassetid://510645146",
+                ["SkyboxUp"] = "rbxassetid://510645195"
+            },
+            ["Clouded Sky"] = {
+                ["SkyboxBk"] = "rbxassetid://252760981",
+                ["SkyboxDn"] = "rbxassetid://252763035",
+                ["SkyboxFt"] = "rbxassetid://252761439",
+                ["SkyboxLf"] = "rbxassetid://252760980",
+                ["SkyboxRt"] = "rbxassetid://252760986",
+                ["SkyboxUp"] = "rbxassetid://252762652"
+            }
+        }
+        
+        -- Dropdown UI setup for changing the skybox
+        WorldMods:AddDropdown('SkyboxChange', {
+            Values = { "Standard", "Among Us", "Doge", "Spongebob", "Deep Space", "Winter", "Clouded Sky" },
+            Default = 3,
+            Multi = false,
+            Text = 'Sky',
+            Callback = function(Value)
+                value = Value
+            end
+        })
+        
+        -- Function to update skybox on every frame
+        local RunService = game:GetService("RunService")
+        RunService.Heartbeat:Connect(function()
+            if value then
+                local skybox = SkyBoxes[value]
+                if skybox then
+                    for i, v in pairs(skybox) do
+                        Sky[i] = v
+                    end
+                end
+            end
+        end)
+        
+        -- Drawing-related functions
+        local draw, objects = {}, {}
+        
+        function draw:new(type, props)
+            local obj = Drawing.new(type)
+            for i, v in pairs(props) do
+                obj[i] = v
+            end
+            objects[#objects + 1] = obj
+            return obj
+        end
+        
+        function draw:removeall()
+            for i, v in pairs(objects) do
+                v:Remove()
+            end
+        end
+        
+        function draw:changevis(value)
+            for i, v in pairs(objects) do
+                v.Visible = value
+            end
+        end
+
+        WorldMods:AddToggle('Remove Grass', {
+            Text = 'No Grass',
+            Default = false,
+            Tooltip = '',
+            Callback = function(state)
+                if state then
+                    sethiddenproperty(game:GetService("Workspace").Terrain, "Decoration", false)
+                else
+                    sethiddenproperty(game:GetService("Workspace").Terrain, "Decoration", true)
+                end
+            end
+        })
+
+        WorldMods:AddToggle('Remove Weather', {Text = 'No Weather', Default = false, Tooltip = '', Callback = function(state)
+            if state then
+            print("Enabled")
+            
+            else
+            print("hi nigger")
+            end
+            end})
+            WorldMods:AddToggle('Remove Clouds', {Text = 'Remove Clouds', Default = false, Tooltip = '', Callback = function(state)
+            if state then
+            -- Locate the Sky object in the Lighting service
+        local sky = game.Lighting:FindFirstChildOfClass("Sky")
+        
+        if sky then
+            -- Disable celestial bodies (clouds, sun, and moon)
+            sky.CelestialBodiesShown = false
+            print("Clouds have been removed.")
+        else
+            print("No Sky object found in Lighting.")
+        end
+        
+            else
+            print("bye nigger")
+            end
+            end})
+
+            WorldMods:AddToggle('Always Day', {Text = 'Always Day', Default = false, Tooltip = '', Callback = function(state)
+                if state then
+                    local Lighting = game:GetService("Lighting")
+                    local RunService = game:GetService("RunService")
+                    
+                    -- Function to keep the time fixed at 10:00 AM
+                    local function setDayTime()
+                        Lighting.ClockTime = 10  -- Locks time to 10:00 AM
+                    end
+                    
+                    -- Connect the function to RenderStepped to update every frame
+                    RunService.RenderStepped:Connect(setDayTime)
+                    
+                    -- Set lighting properties for a bright daylight environment
+                    Lighting.Ambient = Color3.fromRGB(255, 255, 255)  -- Bright ambient light (white)
+                    Lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)  -- Outdoor ambient light (white)
+                    Lighting.ShadowSoftness = 0  -- Sharp shadows (optional)
+                    
+                    -- Ensure there's a Sky object in Lighting
+                    local sky = Lighting:FindFirstChildOfClass("Sky")
+                    if not sky then
+                        sky = Instance.new("Sky")
+                        sky.Parent = Lighting
+                    end						
+            
+                else
+                print("bye nigger")
+                end
+                end})
+                WorldMods:AddToggle('Remove Shadows', {Text = 'No Shadows', Default = false, Tooltip = '', Callback = function(state)
+                if state then
+                -- Services
+            local Lighting = game:GetService("Lighting")
+            
+            -- Function to disable shadows globally
+            local function disableGlobalShadows()
+                Lighting.GlobalShadows = false
+                Lighting.EnvironmentDiffuseScale = 0 -- Disable environment diffuse lighting
+                Lighting.EnvironmentSpecularScale = 0 -- Disable environment specular lighting
+            end
+            
+            -- Function to disable shadows on all light objects
+            local function disableLightShadows()
+                for _, light in pairs(Lighting:GetDescendants()) do
+                    if light:IsA("Light") then
+                        light.Shadows = false
+                    end
+                end
+            end
+            
+            -- Monitor for new lights added to Lighting
+            local function monitorNewLights()
+                Lighting.DescendantAdded:Connect(function(descendant)
+                    if descendant:IsA("Light") then
+                        descendant.Shadows = false
+                    end
+                end)
+            end
+            
+            -- Main function to remove shadows
+            local function removeShadows()
+                disableGlobalShadows()
+                disableLightShadows()
+                monitorNewLights()
+            end
+            
+            -- Execute shadow removal
+            removeShadows()
+                
+                else
+                print("bye nigger")
+                end
+                end})
+                WorldMods:AddToggle('Remove Bloom', {Text = 'No Bloom', Default = false, Tooltip = '', Callback = function(state)
+                if state then
+                -- Services
+            local Lighting = game:GetService("Lighting")
+            
+            -- Function to disable bloom effect
+            local function disableBloomEffect()
+                -- Check if BloomEffect exists and disable it
+                local bloom = Lighting:FindFirstChildOfClass("BloomEffect")
+                if bloom then
+                    bloom.Enabled = false
+                else
+                    -- If no BloomEffect exists, create one and disable it
+                    local newBloom = Instance.new("BloomEffect")
+                    newBloom.Parent = Lighting
+                    newBloom.Enabled = false
+                end
+            end
+            
+            -- Main function to remove bloom
+            local function removeBloom()
+                disableBloomEffect()
+            end
+            
+            -- Execute bloom removal
+            removeBloom()
+            
+                else 
+                print("bye nigger")
+                end 
+                end})
+                
+                WorldMods:AddDivider()
+
+    local WorldMods = Tabs.WorldMods:AddRightGroupbox('Crosshair')
+	WorldMods:AddDivider()
+
+	local RunService = game:GetService("RunService")
+	local Players = game:GetService("Players")
+	local LocalPlayer = Players.LocalPlayer
+
+	-- Global Variables
+	local varsglobal = {
+    cursor = {
+        Enabled = false,
+        CustomPos = false,
+        Position = Vector2.new(0, 0),
+        Speed = 10,
+        Radius = 25,
+        Color = Color3.fromRGB(180, 50, 255),
+        Thickness = 1.7,
+        Outline = false,
+        Resize = false,
+        Dot = false,
+        Gap = 10,
+        TheGap = false,
+        sussy = false,
+        rainbow = false,
+        Text = {
+            Logo = false,
+            LogoColor = Color3.fromRGB(255, 255, 255),
+            Name = false,
+            NameColor = Color3.fromRGB(255, 255, 255),
+            LogoFadingOffset = 0,
+        },
+    }
+}
+
+-- Drawing lines for the crosshair
+local lines = {}
+for i = 1, 4 do
+    lines[i] = Drawing.new("Line")
+    lines[i].Thickness = varsglobal.cursor.Thickness
+    lines[i].Transparency = 1
+    lines[i].Visible = false
+end
+
+-- Function to update the crosshair
+local function updateCrosshair(delta)
+    if varsglobal.cursor.Enabled then
+        -- Get the mouse position, adjusting to center the crosshair properly
+        local mousePos = varsglobal.cursor.CustomPos and varsglobal.cursor.Position or Vector2.new(LocalPlayer:GetMouse().X, LocalPlayer:GetMouse().Y) + Vector2.new(0, 58)
+
+        local angle = tick() * varsglobal.cursor.Speed * math.pi / 180
+        local color = varsglobal.cursor.rainbow and Color3.fromHSV((tick() % 5) / 5, 1, 1) or varsglobal.cursor.Color
+
+        for i = 1, 4 do
+            local offsetAngle = angle + (i - 1) * (math.pi / 2)
+            local x1 = mousePos.X + math.cos(offsetAngle) * varsglobal.cursor.Radius
+            local y1 = mousePos.Y + math.sin(offsetAngle) * varsglobal.cursor.Radius
+            local x2 = mousePos.X + math.cos(offsetAngle) * (varsglobal.cursor.Radius - varsglobal.cursor.Gap)
+            local y2 = mousePos.Y + math.sin(offsetAngle) * (varsglobal.cursor.Radius - varsglobal.cursor.Gap)
+
+            lines[i].From = Vector2.new(x1, y1)
+            lines[i].To = Vector2.new(x2, y2)
+            lines[i].Color = color
+            lines[i].Thickness = varsglobal.cursor.Thickness
+            lines[i].Visible = true
+        end
+
+        -- Add optional dot in the center
+        if varsglobal.cursor.Dot then
+            local dot = Drawing.new("Square")
+            dot.Position = mousePos - Vector2.new(1, 1)
+            dot.Size = Vector2.new(2, 2)
+            dot.Color = varsglobal.cursor.Color
+            dot.Visible = true
+        end
+    else
+        for _, line in ipairs(lines) do
+            line.Visible = false
+        end
+    end
+end
+
+RunService.RenderStepped:Connect(updateCrosshair)
+
+-- UI for toggles and sliders
+WorldMods:AddToggle('crosshairenable', {
+    Text = 'Enable Crosshair',
+    Default = false,
+    Callback = function(enabled)
+        varsglobal.cursor.Enabled = enabled
+    end,
+}):AddColorPicker('crosshaircolor', {
+    Default = varsglobal.cursor.Color,
+    Title = 'Crosshair Color',
+    Transparency = 0,
+    Callback = function(value)
+        varsglobal.cursor.Color = value
+    end,
+})
+
+-- Sliders for crosshair properties
+WorldMods:AddSlider('crosshairspeed', {
+    Text = 'Speed',
+    Default = 5,
+    Min = 1,
+    Max = 500,
+    Rounding = 1,
+    Compact = true,
+}):OnChanged(function(value)
+    varsglobal.cursor.Speed = value
+end)
+
+WorldMods:AddSlider('crosshairradius', {
+    Text = 'Radius',
+    Default = 25,
+    Min = 5,
+    Max = 100,
+    Rounding = 1,
+    Compact = true,
+}):OnChanged(function(value)
+    varsglobal.cursor.Radius = value
+end)
+
+WorldMods:AddSlider('crosshairthickness', {
+    Text = 'Thickness',
+    Default = 1.7,
+    Min = 0.1,
+    Max = 10,
+    Rounding = 1,
+    Compact = true,
+}):OnChanged(function(value)
+    varsglobal.cursor.Thickness = value
+end)
+
+WorldMods:AddSlider('crosshairgapsize', {
+    Text = 'Gap',
+    Default = 10,
+    Min = 0,
+    Max = 50,
+    Rounding = 1,
+    Compact = true,
+}):OnChanged(function(value)
+    varsglobal.cursor.Gap = value
+end)
+
+WorldMods:AddToggle('crosshairenableoutline', {
+    Text = 'Outline',
+    Default = false,
+    Callback = function(enabled)
+        varsglobal.cursor.Outline = enabled
+    end,
+})
+
+WorldMods:AddToggle('crosshairenableresize', {
+    Text = 'Resize Animation',
+    Default = false,
+    Callback = function(enabled)
+        varsglobal.cursor.Resize = enabled
+    end,
+})
+
+WorldMods:AddToggle('crosshairenablefaggot', {
+    Text = 'Rainbow',
+    Default = false,
+    Callback = function(enabled)
+        varsglobal.cursor.rainbow = enabled
+    end,
+})
+
+    local WorldMods = Tabs.WorldMods:AddRightGroupbox("Lighting")
+
+	WorldMods:AddDivider()
+
+    local FovViewLeft = Tabs.FovView:AddLeftGroupbox('             Camera')
+	FovViewLeft:AddDivider()
+	FovViewLeft:AddToggle('Force 3rd Person Aim', {Text = 'Force 3rd Person Aim', Default = false, Tooltip = '', Callback = function(state)
+	if state then
+	print("Force 3rd Person Aim Enabled")
+
+	else
+	print("bye nigger")
+	end
+	end})
+	FovViewLeft:AddToggle('Camera Fov', {Text = 'Camera Fov', Default = false, Tooltip = '', Callback = function(state)
+	if state then
+	print("enabled Fov")
+
+	else
+	print("bye nigger")
+	end
+	end})
+	FovViewLeft:AddSlider('ADS Fov', {Text = 'ADS Fov', Default = 90, Min = 0,Max = 120, Rounding = 1,Compact = false, Callback = function() end});	
+	FovViewLeft:AddToggle('Interactive Crosshair', {Text = 'Interactive Crosshair', Default = false, Tooltip = '', Callback = function(state)  end})
+	FovViewLeft:AddToggle('Remove Inventory Blur', {Text = 'Remove Inventory Blur', Default = false, Tooltip = '', Callback = function(state)
+	if state then
+	print("hi nigger")
+
+	else
+	print("bye nigger")
+	end
+	end})
+	FovViewLeft:AddToggle('Remove Vision Blur', {Text = 'Remove Vision Blur', Default = false, Tooltip = '', Callback = function(state)
+	if state then
+	print("hi nigger")
+	
+	else
+	print("bye nigger")
+	end
+	end})
+	FovViewLeft:AddToggle('Remove Bloody Vision', {Text = 'Remove Bloody Vision', Default = false, Tooltip = '', Callback = function(state)
+	if state then
+	print("hi nigger")
+	
+	else
+	print("bye nigger")
+	end
+	end})
+	FovViewLeft:AddToggle('Remove Visor', {Text = 'Remove Visor', Default = false, Tooltip = '', Callback = function(state)
+	if state then
+		local RunService = game:GetService("RunService")
+		local plr = game.Players.LocalPlayer
+		
+		RunService.Stepped:Connect(function()
+			if plr.PlayerGui:FindFirstChild("MainGui") then
+				local visor = plr.PlayerGui.MainGui.MainFrame.ScreenEffects:FindFirstChild("Visor")
+				if visor then
+					visor.Visible = false
+				end
+			end
+		end)		
+	
+	else
+	print("bye nigger")
+	end
+	end})
+
+	FovViewLeft:AddDivider()
+
+    local GunMods = Tabs.GunMods:AddRightGroupbox('Other Mods')
+	GunMods:AddDivider()
+	GunMods:AddToggle('Skin Changer', {Text = 'Skin Changer', Default = false, Tooltip = '', Callback = function(state)
+	if state then
+	print("hi nigger")
+
+	else
+	print("bye nigger")
+	end
+	end})
+    local GunMods = Tabs.GunMods:AddLeftGroupbox('NoRecoil')
+    GunMods:AddDivider()
+	
+
+Legit:AddDropdown('SilentAimHitScan', {Values = { 'Head', 'Torso', 'Arms', 'Legs' }, Default = 1, Multi = true, Text = 'Hit Scan', Tooltip = 'What Parts Of The Body Will The Silent Aim Target.', Callback = function() end});
+Legit:AddSlider('SilentAimHitChance', {Text = 'Hit Chance', Default = 100, Min = 0,Max = 100, Rounding = 1,Compact = false, Callback = function() end});
+Legit:AddToggle('SilentAimShowFov', {Text = 'Draw Fov', Default = false, Tooltip = 'Shows The Fov.', Callback = function() end}):AddColorPicker('SilentAimFovColor', {Default = Color3.new(1, 1, 1), Title = 'Color Of The Fov', Transparency = nil, Callback = function() end});
+Legit:AddSlider('SilentAimFovSize', {Text = 'Fov', Default = 600, Min = 0,Max = 2000, Rounding = 1,Compact = false, Callback = function() end});
+Legit:AddDivider()
+
+local BoxGB = Tabs.Main:AddLeftGroupbox('Box')
+local EnemyGB = Tabs.Main:AddLeftGroupbox('Enemy')
+local TracerGB = Tabs.Main:AddRightGroupbox("Tracer");
+local HighlightGB = Tabs.Main:AddRightGroupbox("Highlight");
+local SettingsGB = Tabs['UI Settings']:AddRightGroupbox("Menu");
+
+SettingsGB:AddButton('Unload', function() Library:Unload() end)
+SettingsGB:AddLabel('Menu bind'):AddKeyPicker('MenuKeybind', { Default = 'RightShift', NoUI = true, Text = 'Menu keybind' });
+Library.ToggleKeybind = Options.MenuKeybind;
+
+BoxGB:AddToggle('BoxEnabled', {
+    Text = 'Enabled',
+    Default = JIGGYBO2.esp.Box.Box,
+    Tooltip = 'Enable or disable Box ESP',
+    Callback = function(Value)
+        JIGGYBO2.esp.Box.Box = Value;
+    end
+})
+
+BoxGB:AddSlider('BoxTransparency', {
+    Text = 'Transparency',
+    Default = JIGGYBO2.esp.Box.BoxTransparency,
+    Min = 0,
+    Max = 1,
+    Rounding = 1,
+    Compact = false,
+    Callback = function(Value)
+        JIGGYBO2.esp.Box.BoxTransparency = Value;
+    end
+})
+
+BoxGB:AddLabel('Color'):AddColorPicker('BoxColor', {
+    Default = JIGGYBO2.esp.Box.Color,
+    Title = 'Color',
+    Transparency = 0,
+    Callback = function(Value)
+        JIGGYBO2.esp.Box.Color = Value;
+    end
+})
+
+BoxGB:AddDivider()
+
+BoxGB:AddToggle('BoxOutlineEnabled', {
+    Text = 'Outline',
+    Default = JIGGYBO2.esp.Box.Outline,
+    Tooltip = 'Enable or disable Box Outline',
+    Callback = function(Value)
+        JIGGYBO2.esp.Box.Outline = Value;
+    end
+})
+
+BoxGB:AddLabel('Outline Color'):AddColorPicker('BoxOutlineColor', {
+    Default = JIGGYBO2.esp.Box.OutlineColor,
+    Title = 'Outline Color',
+    Transparency = 0,
+    Callback = function(Value)
+        JIGGYBO2.esp.Box.OutlineColor = Value;
+    end
+})
+
+EnemyGB:AddToggle('NameEnabled', {
+    Text = 'Name',
+    Default = JIGGYBO2.esp.Box.Name,
+    Tooltip = 'Enable or disable Name',
+    Callback = function(Value)
+        JIGGYBO2.esp.Box.Name = Value;
+    end
+})
+
+EnemyGB:AddToggle('DistanceEnabled', {
+    Text = 'Distance',
+    Default = JIGGYBO2.esp.Box.Distance,
+    Tooltip = 'Enable or disable Distance',
+    Callback = function(Value)
+        JIGGYBO2.esp.Box.Distance = Value;
+    end
+})
+
+TracerGB:AddToggle('TracerEnabled', {
+    Text = 'Enabled',
+    Default = JIGGYBO2.esp.Tracer.Tracer,
+    Tooltip = 'Enable or disable Tracer',
+    Callback = function(Value)
+        JIGGYBO2.esp.Tracer.Tracer = Value;
+    end
+})
+
+TracerGB:AddLabel('Color'):AddColorPicker('TracerColor', {
+    Default = JIGGYBO2.esp.Tracer.Color,
+    Title = 'Color',
+    Transparency = 0,
+    Callback = function(Value)
+        JIGGYBO2.esp.Tracer.Color = Value;
+    end
+})
+
+TracerGB:AddToggle('TracerOutline', {
+    Text = 'Outline',
+    Default = JIGGYBO2.esp.Tracer.Outline,
+    Tooltip = 'Enable or disable Tracer Outline',
+    Callback = function(Value)
+        JIGGYBO2.esp.Tracer.Outline = Value;
+    end
+})
+
+local EnemyGB = Tabs.Main:AddLeftGroupbox('Enemy')
+EnemyGB:AddToggle('GunInventoryEnabled', {
+    Text = 'Show Gun Inventory',
+    Default = false,
+    Tooltip = 'Show the player\'s gun inventory',
+    Callback = function(Value)
+        JIGGYBO2.esp.Box.GunInventory = Value
+    end
+})
+
+TracerGB:AddLabel('Outline Color'):AddColorPicker('TracerOutlineColor', {
+    Default = JIGGYBO2.esp.Tracer.OutlineColor,
+    Title = 'Outline Color',
+    Transparency = 0,
+    Callback = function(Value)
+        JIGGYBO2.esp.Tracer.OutlineColor = Value;
+    end
+})
+
+HighlightGB:AddToggle('HighlightEnabled', {
+    Text = 'Enabled',
+    Default = JIGGYBO2.esp.Highlights.Highlights,
+    Tooltip = 'Enable or disable Highlights',
+    Callback = function(Value)
+        JIGGYBO2.esp.Highlights.Highlights = Value;
+    end
+})
+
+HighlightGB:AddSlider('HighlightOutlineTransparency', {
+    Text = 'Outline Transparency',
+    Default = JIGGYBO2.esp.Highlights.OutlineTransparency,
+    Min = 0,
+    Max = 1,
+    Rounding = 1,
+    Compact = false,
+    Callback = function(Value)
+        JIGGYBO2.esp.Highlights.OutlineTransparency = Value;
+    end
+})
+
+HighlightGB:AddLabel('Outline Color'):AddColorPicker('HighlightOutlineColor', {
+    Default = JIGGYBO2.esp.Highlights.OutlineColor,
+    Title = 'Outline Color',
+    Transparency = 0,
+    Callback = function(Value)
+        JIGGYBO2.esp.Highlights.OutlineColor = Value;
+    end
+})
+
+HighlightGB:AddSlider('HighlightFillTransparency', {
+    Text = 'Fill Transparency',
+    Default = JIGGYBO2.esp.Highlights.FillTransparency,
+    Min = 0,
+    Max = 1,
+    Rounding = 1,
+    Compact = false,
+    Callback = function(Value)
+        JIGGYBO2.esp.Highlights.FillTransparency = Value;
+    end
+})
+
+HighlightGB:AddLabel('Fill Color'):AddColorPicker('HighlightFillColor', {
+    Default = JIGGYBO2.esp.Highlights.FillColor,
+    Title = 'Fill Color',
+    Transparency = 0,
+    Callback = function(Value)
+        JIGGYBO2.esp.Highlights.FillColor = Value;
+    end
+})
+
+HighlightGB:AddToggle('HighlightAlwaysVisible', {
+    Text = 'Always Visible',
+    Default = JIGGYBO2.esp.Highlights.AlwaysVisible,
+    Tooltip = 'Enable or disable Highlights',
+    Callback = function(Value)
+        JIGGYBO2.esp.Highlights.AlwaysVisible = Value;
+    end
+})
+
+ThemeManager:SetLibrary(Library);
+ThemeManager:SetFolder('JIGGYBO2')
+ThemeManager:ApplyToTab(Tabs['UI Settings']);
+ThemeManager:ApplyTheme("BBot");
+
+SaveManager:SetLibrary(Library);
+SaveManager:IgnoreThemeSettings();
+SaveManager:SetIgnoreIndexes({ 'MenuKeybind' })
+SaveManager:SetFolder('JIGGYBO2');
+SaveManager:BuildConfigSection(Tabs['UI Settings']);
+SaveManager:LoadAutoloadConfig();
